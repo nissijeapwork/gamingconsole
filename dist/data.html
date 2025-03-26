@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE-edge">
+  <meta name="viewport" content="width=device-width, intial-scale=1.0">
+  <title> Records - Gaming Consoles  </title>
+  <link rel="icon" href="images/logo.png" type="image/x-icon">
+
+  <!-- Bootstrap and Icons -->
+      <!-- ====== Delete Modal ======= -->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+      <!-- ====== Edit Modal ======= -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+
+  <!-- ====== ionicons ======= -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <!-- Data From Firebase to DataTables -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css" />
+  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+  <!----Style Sheet---->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+  <style>
+    body {
+      background-image: url('assets1/images/body-bg.jpg');
+    }
+    </style>
+
+ <!-- =============== Navigation ================ -->
+ <div class="container">
+  <div class="navigation">
+
+  <ul>
+    <li>
+        <a href="#">
+          <img src="images/logo-full.png" style="margin: 20px 20px" width="80%" height="80%">
+            <!--<span class="icon">
+                <ion-icon name="game-controller" style="color: hsl(34, 100%, 51%);"></ion-icon>
+            </span>
+            <strong><span class="title" style="color: hsl(34, 100%, 51%);">Game Consoles</span></strong>-->
+        </a>
+    </li>
+
+    <li>
+        <a href="dashboard.html">
+            <span class="icon">
+                <ion-icon name="home-outline"></ion-icon>
+            </span>
+            <span class="title">Dashboard</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="data.html">
+            <span class="icon">
+                <ion-icon name="server-outline"></ion-icon>
+            </span>
+            <span class="title">Records</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="chart.html">
+            <span class="icon">
+                <ion-icon name="stats-chart-outline"></ion-icon>
+            </span>
+            <span class="title">Visualizations</span>
+        </a>
+    </li>
+
+    
+    <li>
+        <a href="index.html">
+            <span class="icon" style=" align-self: end">
+                <ion-icon name="log-out-outline"></ion-icon>
+            </span>
+            <span class="title">Sign Out</span>
+        </a>
+    </li>
+</ul>
+</div>
+
+<!-- ========================= Main ==================== -->
+<div class="main">
+  <div class="topbar">
+      <div class="toggle">
+          <ion-icon name="menu-outline"></ion-icon>
+      </div>
+  </div>
+
+<!-- ================ Manage Details List ================= -->
+<div class="details">
+  <div class="recentOrders">
+      <div class="cardHeader">
+          <h2 style="color: hsl(34, 100%, 51%);">Manage Game Consoles</h2>
+      </div>
+
+      
+      <div class="main-content">
+        <div class="row mb-3">
+          <div class="col-auto">
+            <button id="add-btn" type="button" class="btn btn-success add-btn" data-bs-toggle="modal"
+              data-bs-target="#add-modal" style="background: linear-gradient(to right, #8905D1, #530092);"><ion-icon name="add-circle"></ion-icon> Add Data</button>
+          </div><br><br> 
+        </div>
+        
+        <table id="myTable" class="">
+          <thead>
+            <tr>
+              <td>No. </td>
+              <td>Console Name</td>
+              <td>Console Type </td>
+              <td>Company </td>
+              <td>Year Released </td>
+              <td>Units Sold</td>
+              <td>Action</td>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+
+      <!-- Add Modal -->
+      <div id="add-modal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" style="font-weight: 1000; font-size:larger; color: hsl(34, 100%, 51%);">Add Data</h5>
+              <button type="button" id="close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="form-row">
+                <form>
+                  <div class="form-group col-md-12">
+                    <label for="ConsoleName" class="form-label"  style="color: black" required>Console Name:</label>
+                    <input type="text" class="form-control" id="ConsoleName" required>
+                  </div>
+
+                  <div class="form-group col-md-12">
+                    <label for="ConsoleType" class="form-label"  style="color: black" required>Console Type:</label>
+                      <input type="test" class="form-control" id="ConsoleType" required>
+                      <span class="input-group-text"></span>
+                  </div>
+
+                  <div class="form-group col-md-12">
+                    <label for="Company" class="form-label"  style="color: black" required>Company:</label>
+                      <input type="text" class="form-control" id="Company" required>
+                      <span class="input-group-text"></span>
+                  </div>
+
+                  <div class="form-group col-md-12">
+                    <label for="YearReleased" class="form-label"  style="color: black" required>Year Released:</label>
+                      <input type="number" class="form-control" id="YearReleased" required>
+                      <span class="input-group-text"></span>
+                  </div>
+
+                  <div class="form-group col-md-12">
+                    <label for="UnitsSold" class="form-label"  style="color: black" required>Units Sold:</label>
+                      <input type="number" class="form-control" id="UnitsSold" required>
+                      <span class="input-group-text"></span>
+                  </div>
+
+                  <div class="form-group col-md-12">
+                    <label for="DateTime" class="form-label" style="color: black">Date and Time:</label>
+                    <input type="datetime-local" class="form-control" id="DateTime" required>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style=" background: linear-gradient(to right, #EA4444, #FF0000);">Cancel</button>
+              <button type="button" class="btn btn-primary" id="add-button" style="background: linear-gradient(to right, #2EC506, #118B0B);">Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Modal -->
+      <div id="edit-modal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" style="font-weight: 1000; font-size:larger; color: hsl(34, 100%, 51%);">Edit Data</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                id="edit-close"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group col-md-12">
+                  <label for="ConsoleName" class="form-label" style="color: black" required>Console Name:</label>
+                  <input type="text" class="form-control" id="consoleNameInput" required>
+                </div>
+
+                <div class="form-group col-md-12">
+                  <label for="ConsoleType" class="form-label" style="color: black" required>Console Type:</label>
+                    <input type="text" class="form-control" id="consoleTypeInput" required>
+                    <span class="input-group-text"></span>
+                  </div>
+                
+                <div class="form-group col-md-12">
+                  <label for="Company" class="form-label" style="color: black" required>Company:</label>
+                    <input type="text" class="form-control" id="companyInput" required>
+                    <span class="input-group-text"></span>
+                </div>
+                
+                <div class="form-group col-md-12">
+                  <label for="YearReleased" class="form-label" style="color: black" required>Year Released:</label>
+                    <input type="number" class="form-control" id="yearReleasedInput" required>
+                    <span class="input-group-text"></span>
+                </div>
+
+                <div class="form-group col-md-12">
+                  <label for="UnitsSold" class="form-label" style="color: black" required>Units Sold:</label>
+                    <input type="number" class="form-control" id="unitsSoldInput" required>
+                    <span class="input-group-text"></span>
+                </div>
+
+                <!--<div class="form-group col-md-12">
+                  <label for="DateTime" class="form-label">Current Date and Time</label>
+                  <input type="text" class="form-control" id="CurrentDateTime" readonly>
+                </div>-->
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                id="edit-close-button" style=" background: linear-gradient(to right, #EA4444, #FF0000);">Close</button>
+              <button type="button" class="btn btn-primary" id="update-button" style="background: linear-gradient(to right, #2EC506, #118B0B);">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <!-- ======= Scripts ====== -->
+      <script src="assets/js/main.js"></script>
+</body>
+</html>
+
+
+  <!-- firebase js -->
+  <script type="module">
+
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js';
+    import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js';
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      GoogleAuthProvider,
+      signInWithRedirect,
+      getRedirectResult,
+      signInWithPopup,
+      onAuthStateChanged,
+    }
+      from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js';
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      connectFirestoreEmulator,
+      query,
+      getDocs,
+      getDoc,
+      updateDoc,
+      setDoc,
+      doc,
+      onSnapshot,
+      deleteDoc,
+      orderBy
+    } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js';
+
+    // Import the functions you need from the SDKs you need
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAx4pQLKwmGQz4v1tbHCY5RRuKRGTDrgjk",
+      authDomain: "case-study-d6a32.firebaseapp.com",
+      projectId: "case-study-d6a32",
+      storageBucket: "case-study-d6a32.appspot.com",
+      messagingSenderId: "910364984531",
+      appId: "1:910364984531:web:c4055963432ddcf45d4026",
+      measurementId: "G-PDW0GB00WY"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const provider = new GoogleAuthProvider();
+    // const provider2 = new FacebookAuthProvider();
+    // const auth = getAuth();
+    console.log(app)
+
+    //Firestore
+    const db = getFirestore(app);
+
+    //DataTables
+    firebase.initializeApp(firebaseConfig);
+    const db2 = firebase.firestore();  // Function for Database Firestore 
+
+    function updateSuccess() {
+      Swal.fire({
+        title: "Success",
+        text: "Record updated successfully",
+        icon: "success",
+      });
+    }
+
+    function updateError(errorMessage) {
+      Swal.fire({
+        title: "Error",
+        text: `There was an error updating the record: ${errorMessage}`,
+        icon: "error",
+      });
+    }
+
+    // Get the data from Firestore and add it to the DataTable
+    db2.collection("GamingConsoles")
+      .orderBy("DateTime", "desc")
+      .onSnapshot(
+        (querySnapshot) => {
+          let counter = 1; // initialize counter variable
+          let updateCount = 0; // initialize update counter 
+          const table = $('#myTable').DataTable(); // cache DataTable instance
+          table.clear(); // clear existing data in the table
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const dateTime = data["DateTime"];
+            const date = new Date(dateTime.toDate()).toLocaleDateString();
+            const time = new Date(dateTime.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            // Edit Button             
+            const editButton = `<button type="button" class="btn btn-warning btn-sm edit" style=" background: linear-gradient(to right, #FFCF07, #FFA80F);" data-id="${doc.id}-edit" data-consolename="${data['Console Name']}" data-consoletype="${data['Console Type']}" data-company="${data['Company']}" data-yearreleased="${data['Year Released']}" data-unitssold="${data['Units Sold']}">Edit</button>`;
+            // Delete Button
+            const deleteButton = `<button type="button" class="btn btn-danger btn-sm delete" style=" background: linear-gradient(to right, #EA4444, #FF0000);" data-id="${doc.id}-delete">Delete</button>`;
+
+            // Add event listener for update button
+            $(document).off('click', '#update-button').on('click', '#update-button', function () {
+              const docId = $(this).data('id');
+              const consoleName = $('#consoleNameInput').val();
+              const consoleType = $('#consoleTypeInput').val();
+              const company = $('#companyInput').val();
+              const yearReleased = $('#yearReleasedInput').val();
+              const unitsSold = $('#unitsSoldInput').val();
+              // const dateTime = ($('#CurrentDateTime').val());
+              const newData = {
+                'Console Name': consoleName,
+                'Console Type': consoleType,
+                'Company': company,
+                'Year Released': yearReleased,
+                'Units Sold': unitsSold,
+                // 'DateTime': dateTime // Fix: can't update time yet will fix soon
+              };
+              console.log('Updating docId:', docId); // Check if Document ID matches with docID
+              db2.collection("GamingConsoles").doc(docId).update(newData) // update only the specific document
+                .then(() => {
+                  console.log("update success");
+                  $('#edit-modal').modal('hide');
+                  updateSuccess();
+                  $(this).off('click'); // Remove event listener after update is completed
+                })
+                .catch((error) => {
+                  console.error("Error updating record: ", error);
+                  console.log("Error message: ", error.message);
+                  updateError(error.message);
+                });
+            });
+
+
+            // Add event listener for edit button
+            $(document).on('click', '.edit', function () {
+              if ($(this).data('id') === `${doc.id}-edit`) {
+                console.log(`Editing document with ID: ${doc.id}`); // add this line
+                const docId = $(this).data('id').replace('-edit', '');
+                const consoleName = $(this).data('consolename');
+                const consoleType = $(this).data('consoletype');
+                const company = $(this).data('company');
+                const yearReleased = $(this).data('yearreleased');
+                const unitsSold = $(this).data('unitssold');
+                const dateTime = $(this).data('datetime');
+                // Pass data to edit form and display it
+                $('#consoleNameInput').val(consoleName);
+                $('#consoleTypeInput').val(consoleType);
+                $('#companyInput').val(company);
+                $('#yearReleasedInput').val(yearReleased);
+                $('#unitsSoldInput').val(unitsSold);
+                const date = new Date(dateTime).toLocaleDateString();
+                const time = new Date(dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                $('#CurrentDateTime').val(`${date} ${time}`);
+                $('#edit-modal').modal('show');
+                $('#update-button').data('id', docId);
+              }
+            });
+
+            // Add event listener for delete button
+            $(document).on('click', '.delete', function () {
+              if ($(this).data('id') === `${doc.id}-delete`) {
+                Swal.fire({
+                  title: "Are you sure?",
+                  text: `Do you really want to delete the record for ${data["Console Name"]}?`,
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: 'red',
+                  cancelButtonColor: 'orange',
+                  confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    db2.collection("GamingConsoles").doc(doc.id).delete()
+                      .then(() => {
+                        console.log("Successful Delete")
+                        Swal.fire({
+                          title: "Deleted!",
+                          text: `The record for ${data["Console Name"]} has been deleted`,
+                          icon: "success",
+                        });
+                        table.row($(this).closest('tr')).remove().draw(); // remove row from DataTable
+                      })
+                      .catch((error) => {
+                        console.error("Error removing record: ", error);
+                        Swal.fire({
+                          title: "Error",
+                          text: "There was an error removing the record.",
+                          icon: "error",
+                        });
+                      });
+                  }
+                });
+              }
+            });
+
+            // Displays the Data to the Tables
+            table.row.add([
+              counter++, // increment counter variable and include as first column
+              data["Console Name"],
+              data["Console Type"],
+              data["Company"],
+              data["Year Released"],
+              data["Units Sold"],
+              //`${date} ${time}`,
+              `${editButton} ${deleteButton}`
+            ]);
+
+          });
+          table.draw(); // refresh the table with new data
+        },
+        (error) => {
+          console.log(`Error getting documents: ${error}`);
+        }
+      );
+
+
+
+    // <----- ADD MODAL -----> 
+
+    // Get the add modal element from the DOM
+    const addModal = document.getElementById("add-modal");
+
+    // Get the input fields and buttons from the add modal
+    const addConsolenameInput = addModal.querySelector("#ConsoleName");
+    const addConsoletypeInput = addModal.querySelector("#ConsoleType");
+    const addCompanyInput = addModal.querySelector("#Company");
+    const addYearreleasedInput = addModal.querySelector("#YearReleased");
+    const addUnitssoldInput = addModal.querySelector("#UnitsSold");
+    const addDatetimeInput = addModal.querySelector("#DateTime");
+    const addButton = addModal.querySelector("#add-button");
+    const cancelButton = addModal.querySelector("#cancel-button");
+
+    // Add event listener to the add button
+    addButton.addEventListener("click", () => {
+      const ConsoleName = addConsolenameInput.value.trim();
+      const ConsoleType = addConsoletypeInput.value.trim();
+      const Company = addCompanyInput.value.trim();
+      const YearReleased = addYearreleasedInput.value.trim();
+      const UnitsSold = addUnitssoldInput.value.trim();
+      const DateTime = new Date(addDatetimeInput.value.trim());
+
+      // Check if any of the input fields are blank
+      if (!ConsoleName || !ConsoleType || !Company || !YearReleased || !UnitsSold || !DateTime) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Please Fill Out All The Fields"
+        });
+        return;
+      }
+
+      // Add the data to Firestore
+      addDoc(collection(db, "GamingConsoles"), {
+        "Console Name": ConsoleName,
+        "Console Type": ConsoleType,
+        "Company": Company,
+        "Year Released": YearReleased,
+        "Units Sold": UnitsSold,
+        "DateTime": DateTime
+      })
+        .then((docRef) => {
+          console.log("Document written with ID: ", docRef.id);
+        })
+        .catch((error) => {
+          console.error("Error adding document: ", error);
+        });
+
+      // Reset the input fields
+      addConsolenameInput.value = "";
+      addConsoletypeInput.value = "";
+      addCompanyInput.value = "";
+      addYearreleasedInput.value = "";
+      addUnitssoldInput.value = "";
+      addDatetimeInput.value = "";
+
+      function hideAddModal() {
+        const addModal = new bootstrap.Modal(document.querySelector("add-modal"));
+        const modalBackdrop = document.querySelector('.modal-backdrop');
+
+        // Hide the modal
+        addModal.hide();
+
+        // Remove the backdrop
+        modalBackdrop.parentNode.removeChild(modalBackdrop);
+      }
+
+      // Show a success message
+      Swal.fire({
+        icon: "success",
+        title: "Data Added Successfully",
+        text: "You can either close this modal or add more data"
+      });
+    });
+
+    // Add event listener to the add modal to reset the input fields
+    addModal.addEventListener("hidden.bs.modal", () => {
+      addConsolenameInput.value = "";
+      addConsoletypeInput.value = "";
+      addCompanyInput.value = "";
+      addYearreleasedInput.value = "";
+      addUnitssoldInput.value = "";
+      addDatetimeInput.value = "";
+    });
+
+    //----- Logout code start	  
+    document.getElementById("logout2").addEventListener("click", function () {
+      console.log('Logging out...');
+      Swal.fire({
+        icon: 'success',
+        title: 'Logged Out Successfully',
+      });
+      setTimeout(function () {
+        window.location.href = "index.html";
+        window.close(); // Closes the current tab
+      }, 2000);
+    });
+
+  </script>
+
+  <!-- Data Table Show Entries -->
+  <script>
+    $('#myTable').dataTable({
+      "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      "columnDefs": [
+        { "width": "5%", "targets": 0 }, // No
+        { "width": "15%", "targets": 1 }, // Console Name
+        { "width": "14%", "targets": 2 }, // Console Type Lvl
+        { "width": "14%", "targets": 3 }, // Company Lvl
+        { "width": "14%", "targets": 4 }, // Year Released Lvl
+        { "width": "20%", "targets": 5 }, // Units Sold
+        { "width": "18%", "targets": 6 }, // Action
+      ],
+      "columns": [
+        { "className": "text-center" }, // No
+        { "className": "text-center" }, // Console Name
+        { "className": "text-center" }, // Console Type Lvl
+        { "className": "text-center" }, // Company Lvl
+        { "className": "text-center" }, // Year Released Lvl
+        { "className": "text-center" }, // Units Sold
+        { "className": "text-center" }, // Action
+      ]
+    });
+
+  </script>
+</body>
+
+</html>

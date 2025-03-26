@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE-edge">
+  <meta name="viewport" content="width=device-width, intial-scale=1.0">
+  <title> Records - Gaming Consoles  </title>
+  <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <!-- Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <!-- Data From Firebase to DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css" />
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Include DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+  <!----Style Sheet---->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+  <style>
+    body {
+      background-image: url('assets1/images/body-bg.jpg');
+    }
+    </style>
+
+ <!-- =============== Navigation ================ -->
+ <div class="container">
+  <div class="navigation">
+
+  <ul>
+    <li>
+        <a href="#">
+          <img src="images/logo-full.png" style="margin: 20px 20px" width="80%" height="80%">
+            <!--<span class="icon">
+                <ion-icon name="game-controller" style="color: hsl(34, 100%, 51%);"></ion-icon>
+            </span>
+            <strong><span class="title" style="color: hsl(34, 100%, 51%);">Game Consoles</span></strong>-->
+        </a>
+    </li>
+
+    <li>
+        <a href="dashboard.html">
+            <span class="icon">
+                <ion-icon name="home-outline"></ion-icon>
+            </span>
+            <span class="title">Dashboard</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="data.html">
+            <span class="icon">
+                <ion-icon name="server-outline"></ion-icon>
+            </span>
+            <span class="title">Records</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="chart.html">
+            <span class="icon">
+                <ion-icon name="stats-chart-outline"></ion-icon>
+            </span>
+            <span class="title">Visualizations</span>
+        </a>
+    </li>
+
+    
+    <li>
+        <a href="login.html">
+            <span class="icon" style=" align-self: end">
+                <ion-icon name="log-out-outline"></ion-icon>
+            </span>
+            <span class="title">Sign Out</span>
+        </a>
+    </li>
+</ul>
+</div>
+
+<!-- ========================= Main ==================== -->
+<div class="main">
+  <div class="topbar">
+      <div class="toggle">
+          <ion-icon name="menu-outline"></ion-icon>
+      </div>
+  </div>
+
+
+  <!-- ================ Data Visualizations ================= -->
+
+  <div class="details">
+    <div class="recentOrders">
+        <div class="cardHeader">
+          <h2 style="color: hsl(34, 100%, 51%);">Data Visualization</h2>
+        </div>
+
+        <div class="chartsBx">
+          <div class="chart">
+              <h2>Pie Chart</h2>
+              <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chartsBx">
+          <div class="chart">
+              <h2>Line Chart</h2>
+              <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chartsBx">
+          <div class="chart">
+            <h2>Bar Chart</h2>
+              <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chartsBx">
+          <div class="chart">
+            <h2>Area Chart</h2>
+              <canvas id="areaChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chartsBx">
+          <div class="chart">
+              <h2>Scatter Plot Chart</h2>
+              <canvas id="scatterChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chartsBx">
+          <div class="chart">
+              <h2>Polar Area Chart</h2>
+              <canvas id="polarareaChart"></canvas>
+            </div>
+        </div>
+
+        </div>
+    </div>
+  </div>
+</div>
+
+  <!-- ======= Scripts ====== -->
+  <script src="assets/js/main.js"></script>
+
+
+
+<script type="module">
+// Import the functions you need from the SDKs you need
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js';
+import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js';
+import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js';
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAx4pQLKwmGQz4v1tbHCY5RRuKRGTDrgjk",
+      authDomain: "case-study-d6a32.firebaseapp.com",
+      projectId: "case-study-d6a32",
+      storageBucket: "case-study-d6a32.appspot.com",
+      messagingSenderId: "910364984531",
+      appId: "1:910364984531:web:c4055963432ddcf45d4026",
+      measurementId: "G-PDW0GB00WY"
+    };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+
+// line graph
+getDocs(collection(db, "GamingConsoles")).then(docSnap => {
+  let GamingConsolesYear = {};
+  let GamingConsolesNames = {};
+
+  docSnap.forEach((doc) => {
+    const data = doc.data();
+    const year = data["Year Released"];
+    const name = data["Console Name"];
+
+    if (year in GamingConsolesYear) {
+      GamingConsolesYear[year] += 1;
+      GamingConsolesNames[year].push(name);
+    } else {
+      GamingConsolesYear[year] = 1;
+      GamingConsolesNames[year] = [name];
+    }
+  });
+
+  const GamingConsolesData = {
+    labels: [],
+    datasets: [{
+      label: 'Number of Consoles Released',
+      data: [],
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 2
+    }]
+  };
+
+  for (const year in GamingConsolesYear) {
+    if (GamingConsolesYear.hasOwnProperty(year)) {
+      const count = GamingConsolesYear[year];
+      if (count !== undefined) {
+        GamingConsolesData.labels.push(year);
+        GamingConsolesData.datasets[0].data.push(count);
+      }
+    }
+  }
+
+  const ctx = document.getElementById('lineChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: GamingConsolesData,
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Consoles Released in a Year',
+                color: 'white',
+                font: {
+                  size: 20, // Increase the font size of the labels
+                  family: 'Oxanium'
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    afterBody: function(context) {
+                        const year = context[0].label;
+                        return '\nConsoles: ' + GamingConsolesNames[year].join(', ');
+                    }
+                }
+            },
+            legend: {
+                labels: {
+                    color: '#FFA500', // Changing the label color to yellow orange
+                    font: {
+                        size: 15, // Increase the font size of the labels
+                        family: 'Oxanium'
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Year Released',
+                color: '#FFA500', // Change the color to yellow orange
+                font: {
+                    size: 15, // Change the font size to whatever you want
+                    family: 'Oxanium'
+                }
+              },
+                ticks: {
+                    color: 'white', // Change the color to yellow orange
+                    font: {
+                        size: 15, // Change the font size to whatever you want
+                        family: 'Oxanium'
+                    }
+                }
+            },
+            y: {
+                ticks: {
+                    color: 'white', // Change the color to yellow orange
+                    font: {
+                        size: 15, // Change the font size to whatever you want
+                        family: 'Oxanium'
+                    }
+                }
+            }
+        }
+    }
+});
+})
+.catch(function(error) {
+  console.error("Error retrieving data from Firestore: ", error);
+});
+
+
+// Pie chart for the number of consoles released by each company
+getDocs(collection(db, "GamingConsoles")).then((docSnap) => {
+  let CompanyData = {};
+
+  docSnap.forEach((doc) => {
+    const data = doc.data();
+    const company = data.Company;
+
+    if (company in CompanyData) {
+      CompanyData[company] += 1;
+    } else {
+      CompanyData[company] = 1;
+    }
+  });
+
+  const pieChartData = {
+    labels: [],
+    datasets: [{
+      label: 'Number of Consoles Released',
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+      borderWidth: 2,
+      hoverBackgroundColor: [],
+      hoverBorderColor: []
+    }]
+  };
+
+  const randomColor = () => {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgba(${r}, ${g}, ${b}, 0.5)`;
+  };
+
+  for (const company in CompanyData) {
+    if (CompanyData.hasOwnProperty(company)) {
+      const count = CompanyData[company];
+      if (count !== undefined) {
+        pieChartData.labels.push(company);
+        pieChartData.datasets[0].data.push(count);
+        const color = randomColor();
+        pieChartData.datasets[0].backgroundColor.push(color);
+        pieChartData.datasets[0].borderColor.push(color);
+        pieChartData.datasets[0].hoverBackgroundColor.push(color);
+        pieChartData.datasets[0].hoverBorderColor.push(color);
+      }
+    }
+  }
+
+  const ctx = document.getElementById('pieChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'pie',
+    data: pieChartData,
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Consoles Released by Each Company',
+          color: 'white',
+          font: {
+            size: 20, // Change the font size to whatever you want
+            family: 'Oxanium'
+          }
+        },
+        legend: {
+          labels: {
+            color: '#FFA500', // Change the color to yellow orange
+            font: {
+              size: 15, // Change the font size to whatever you want
+              family: 'Oxanium' // Keep the font family as Oxanium
+            }
+          }
+        }
+      },
+      hover: {
+        mode: 'neanerest',
+        intersect: true
+      }
+    }
+  });
+})
+.catch(function (error) {
+  console.error("Error retrieving data from Firestore: ", error);
+});
+
+
+
+
+// Area chart for units sold by company
+getDocs(collection(db, "GamingConsoles")).then(docSnap => {
+  let companyData = {};
+
+  docSnap.forEach((doc) => {
+      const data = doc.data();
+      const companyName = data["Company"];
+      const unitsSold = data["Units Sold"];
+
+      if (!(companyName in companyData)) {
+          companyData[companyName] = [];
+      }
+
+      companyData[companyName].push(unitsSold);
+  });
+
+  const companies = Object.keys(companyData);
+  const dataSets = companies.map(companyName => {
+      const data = companyData[companyName];
+      const color = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`;
+      return {
+          label: companyName,
+          data: data,
+          fill: true,
+          backgroundColor: color,
+          borderColor: color,
+          pointHoverBackgroundColor: color,
+          pointHoverBorderColor: color,
+      }
+  });
+
+  const ctx = document.getElementById('areaChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: companies,
+        datasets: dataSets,
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Units Sold by Company',
+                color: 'white',
+                font: {
+                    size: 20, // Change the font size to whatever you want
+                    family: 'Oxanium'
+                }
+            },
+            legend: {
+                labels: {
+                    color: '#FFA500', // Change the color to yellow orange
+                    font: {
+                        size: 15, // Change the font size to whatever you want
+                        family: 'Oxanium' // Keep the font family as Oxanium
+                    }
+                }
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+            },
+        },
+        interaction: {
+            intersect: false,
+            mode: 'nearest',
+        },
+        scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Company',
+                color: '#FFA500',
+                font: {
+                  size: 15,
+                  family: 'Oxanium',
+                },
+              },
+              ticks: {
+                color: 'white',
+                font: {
+                  size: 15,
+                  family: 'Oxanium',
+                },
+              },
+                beginAtZero: true,
+                
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Units Sold',
+                color: '#FFA500',
+                font: {
+                  size: 15,
+                  family: 'Oxanium',
+                },
+              },
+              ticks: {
+                color: 'white',
+                font: {
+                  size: 15,
+                  family: 'Oxanium',
+                },
+              },
+            },
+        },
+    }
+});
+})
+.catch(function(error) {
+  console.error("Error retrieving data from Firestore: ", error);
+});
+
+// Scatter Plot chart
+getDocs(collection(db, "GamingConsoles")).then((docSnap) => {
+  const datasets = [];
+  docSnap.forEach((doc) => {
+    const data = doc.data();
+    const consoleName = data["Console Name"];
+    const unitsSold = data["Units Sold"];
+    const yearReleased = data["Year Released"];
+    const color = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`;
+
+    datasets.push({
+      label: consoleName,
+      data: [{ x: yearReleased, y: unitsSold }],
+      backgroundColor: color,
+      borderColor: color,
+    });
+  });
+
+  const ctx = document.getElementById('scatterChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'scatter',
+    data: { datasets },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Units Sold by Release Year',
+          color: 'white',
+          font: {
+            size: 20,
+            family: 'Oxanium',
+          },
+        },
+        legend: {
+          labels: {
+              color: '#FFA500', // Change the color to yellow orange
+              font: {
+                  size: 12, // Change the font size to whatever you want
+                  family: 'Oxanium' // Keep the font family as Oxanium
+              }
+          }
+      },
+      tooltip: {
+          mode: 'index',
+          intersect: false,
+      },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Year Released',
+            color: '#FFA500',
+            font: {
+              size: 15,
+              family: 'Oxanium',
+            },
+          },
+          ticks: {
+            color: 'white',
+            font: {
+              size: 15,
+              family: 'Oxanium',
+            },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Units Sold',
+            color: '#FFA500',
+            font: {
+              size: 15,
+              family: 'Oxanium',
+            },
+          },
+          ticks: {
+            color: 'white',
+            font: {
+              size: 15,
+              family: 'Oxanium',
+            },
+          },
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+}).catch(function (error) {
+  console.error("Error retrieving data from Firestore: ", error);
+});
+
+
+// bar chart
+getDocs(collection(db, "GamingConsoles")).then(docSnap => {
+  let consoleData = {};
+
+  docSnap.forEach((doc) => {
+    const data = doc.data();
+    const consoleName = data["Console Name"];
+    const consoleType = data["Console Type"];
+    const unitsSold = data["Units Sold"];
+
+    if (!(consoleName in consoleData)) {
+      consoleData[consoleName] = {};
+    }
+    if (!(consoleType in consoleData[consoleName])) {
+      consoleData[consoleName][consoleType] = 0;
+    }
+    consoleData[consoleName][consoleType] += unitsSold;
+  });
+
+  const consoleNames = Object.keys(consoleData);
+  const consoleTypes = Array.from(new Set(consoleNames.flatMap(consoleName => Object.keys(consoleData[consoleName]))));
+  const datasets = consoleTypes.map(consoleType => {
+    const data = consoleNames.map(consoleName => consoleData[consoleName][consoleType] || 0);
+    const color = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`;
+    return {
+      label: consoleType,
+      data: data,
+      backgroundColor: color,
+      borderColor: color,
+    };
+  });
+
+  const ctx = document.getElementById('barChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: consoleNames,
+      datasets: datasets,
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Units Sold by Console Name and Console Type',
+          color: 'white',
+          font: {
+            size: 20,
+            family: 'Oxanium',
+          },
+        },
+        legend: {
+          labels: {
+              color: '#FFA500', // Change the color to yellow orange
+              font: {
+                  size: 15, // Change the font size to whatever you want
+                  family: 'Oxanium' // Keep the font family as Oxanium
+              }
+          }
+      },
+      tooltip: {
+          mode: 'index',
+          intersect: false,
+      },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Console Name',
+            color: '#FFA500',
+            font: {
+              size: 15,
+              family: 'Oxanium',
+            },
+          },
+          ticks: {
+            color: 'white',  // Change the color of the x-axis labels (console names)
+            font: {
+              size: 15,  // Change the font size of the x-axis labels
+              family: 'Oxanium',  // Change the font family of the x-axis labels
+            },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Units Sold',
+            color: '#FFA500',
+            font: {
+              size: 15,
+              family: 'Oxanium',
+            },
+          },
+          beginAtZero: true,
+          ticks: {
+            color: 'white',  // Change the color of the y-axis labels (units sold)
+            font: {
+              size: 15,  // Change the font size of the y-axis labels
+              family: 'Oxanium',  // Change the font family of the y-axis labels
+            },
+          },
+        },
+      },
+      interaction: {
+        mode: 'nearest',
+        intersect: false,
+      },
+    }
+  });
+})
+.catch(function(error) {
+  console.error("Error retrieving data from Firestore: ", error);
+});
+
+
+//polar area chart for the number of consoles released by each company
+getDocs(collection(db, "GamingConsoles")).then((docSnap) => {
+  const companies = new Set(); // Use a Set to store unique company names
+  const unitsSold = [];
+
+  // Extract data from each document
+  docSnap.forEach((doc) => {
+    const data = doc.data();
+    const company = data['Console Type'];
+    const units = data['Units Sold'];
+    companies.add(company); // Add company name to the Set
+    unitsSold.push(units);
+  });
+
+  const uniqueCompanies = Array.from(companies); // Convert Set to array
+  const totalUnits = Array.from(unitsSold);
+
+  // Create the chart dataset
+  const dataset = {
+    data: totalUnits,
+    backgroundColor: [
+      'rgba(255, 99, 132, 0.5)',
+      'rgba(54, 162, 235, 0.5)',
+      'rgba(255, 206, 86, 0.5)',
+      'rgba(75, 192, 192, 0.5)',
+      'rgba(153, 102, 255, 0.5)',
+      'rgba(255, 159, 64, 0.5)'
+    ],
+    borderColor: [
+      'rgba(255, 99, 132, 1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)'
+    ],
+    label: 'Units Sold',
+  };
+
+  // Create the chart data
+  const data = {
+    labels: uniqueCompanies, // Use unique company names
+    datasets: [dataset]
+  };
+
+  // Set the chart options
+  const options = {
+    responsive: true,
+    scale: {
+      ticks: {
+        beginAtZero: true,
+        maxTicksLimit: 10,
+        stepSize: 20,
+      },
+      reverse: false
+    },
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          color: '#FFA500', // Change the color to yellow orange
+          font: {
+              size: 15, // Change the font size to whatever you want
+              family: 'Oxanium' // Keep the font family as Oxanium
+          }
+      }
+      },
+      title: {
+        display: true,
+        text: 'Units Sold by Console Type',
+        font: {
+          size: 20,
+          family: 'Oxanium'
+        },
+        color: 'white'
+      }
+    }
+  };
+
+  // Create the chart
+  const ctx = document.getElementById('polarareaChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'polarArea',
+    data: data,
+    options: options
+  });
+}).catch(function (error) {
+  console.error("Error retrieving data from Firestore: ", error);
+});
+
+
+</script>
+</body>
+</html>

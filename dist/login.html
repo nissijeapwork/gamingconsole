@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+
+    <video autoplay muted loop id="myVideo">
+      <source src="images/bg-vid0.mp4" type="video/mp4">
+    </video>
+    
+    <title>Login - Gaming Consoles</title>
+
+     <!-- ===== Iconscout CSS ===== -->
+     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+      <link rel="stylesheet" href="assets/css/signin.css">
+        
+  
+        <script src="https://kit.fontawesome.com/334c45a40c.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" ></script>
+    
+      </head>
+
+    <body>
+        
+    <div class="container">
+        <div class="forms">
+            <div class="form login">
+                <span class="title">Login</span>
+
+                <form action="#" class="sign-in-form">
+                        <div class="input-field">
+          
+                          <input type="text" name="email" id="login_email" class="form-input" placeholder="Email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address" />
+                       <i class="uil uil-envelope icon"></i>
+                        </div>
+                        <div class="input-field">
+                          <input type="password" id="login_password" name="password" class="form-input" placeholder="Password" />
+                       <i class="uil uil-lock icon"></i>
+                        <i class="uil uil-eye-slash showHidePw"></i>
+                        </div>
+                          <div class="input-field button">
+                        <input type="button" value="Login" id="login" name="login" class="btn solid" />
+                          </div>
+                          <div class="login-signup">
+                    <span class="text">Not a member?
+                        <a href="register.html" class="text signup-link">Signup Now</a>
+                    </span><br>
+                    <hr style="margin-top: 15px; margin-bottom: 5px; border-top: 1px solid #8c8b8b">
+
+                    <p class="social-text">Sign In with</p>
+                        <div class="social-media">
+                          <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f" id="facebook-sign-in"></i>
+                            
+                          </a>
+                          <a class="social-icon">
+                            <i class="fab fa-google" id="google-sign-in"></i>
+
+                          <a href="#" class="social-icon">
+                            <i class="fab fa-twitter" id="facebook-sign-in"></i>
+                            
+                          </a>
+                          <a class="social-icon">
+                            <i class="fab fa-github" id="google-sign-in"></i>
+                        
+                          <a href="#" class="social-icon">
+                            <i class="fab fa-microsoft" id="facebook-sign-in"></i>
+                            
+                          </a>
+                          <a class="social-icon">
+                            <i class="fab fa-yahoo" id="google-sign-in"></i>
+
+                    <!--
+                    <br>OR<br>
+      
+                    <span class="text">Signin with
+                        <div class="social-media">
+                          <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f" id="facebook-sign-in"></i>
+                          </a>
+                          <a href="#" class="social-icon">
+                            <i class="fab fa-google" id="google-sign-in"></i>
+                          </a>
+                        </div>
+                      </form>
+
+                      <form action="#" class="sign-up-form">
+                        <h2 class="title">Sign up</h2>
+                        <div class="input-field">
+                          <i class="fas fa-envelope"></i>
+                          <input type="text" name="email" id="email" class="form-input" placeholder="Email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address">
+                        </div>
+                        <div class="input-field">
+                          <i class="fas fa-lock"></i>
+                          <input type="password" id="password" name="password" class="form-input" placeholder="Password" required="">
+                        </div>
+                        <input type="submit" class="btn" value="Sign up" />
+                        <p class="social-text">Sign up with</p>
+                        <div class="social-media">
+                          <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f" id="facebook-sign-in"></i>
+                            
+                          </a>
+                          <a class="social-icon">
+                            <i class="fab fa-google" id="google-sign-in"></i>
+                  
+                          </a>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+            
+                  <div class="panels-container">
+                    <div class="panel left-panel">
+                      <div class="content">
+                        <h3>New here?</h3>
+                        <p>
+                          Enter your personal details and start journey with us.
+                        </p>
+                        <button class="btn transparent" id="sign-up-btn">
+                          Sign up
+                        </button>
+                      </div>
+                      <img src="images/log.svg" class="image" alt="" />
+                    </div>
+                    <div class="panel right-panel">
+                      <div class="content">
+                        <h3>One of us?</h3>
+                        <p>
+                          To keep connected with us please sign in with your personal info.
+                        </p>
+                        <button class="btn transparent" id="sign-in-btn">
+                          Sign in
+                        </button>
+                      </div>
+                      <img src="images/register.svg" class="image" alt="" />
+                    </div>
+                  </div>
+                </div>
+                -->
+    </body>
+</html>
+
+<script type="module">
+
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
+    import { getAuth, 
+      createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, 
+      signOut, 
+      GoogleAuthProvider, 
+      signInWithRedirect, 
+      getRedirectResult,
+      signInWithPopup,
+      onAuthStateChanged  } 
+      from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAx4pQLKwmGQz4v1tbHCY5RRuKRGTDrgjk",
+      authDomain: "case-study-d6a32.firebaseapp.com",
+      projectId: "case-study-d6a32",
+      storageBucket: "case-study-d6a32.appspot.com",
+      messagingSenderId: "910364984531",
+      appId: "1:910364984531:web:c4055963432ddcf45d4026",
+      measurementId: "G-PDW0GB00WY"
+    };
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);    
+    const auth = getAuth(app);
+    console.log(app);
+
+
+    //----- Login code start	  
+    document.getElementById("login").addEventListener("click", function() {
+      var email =  document.getElementById("login_email").value;
+      var password = document.getElementById("login_password").value;
+    
+      signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        (Swal.fire({
+          icon: 'success',
+          title: 'Logged In Successfully',
+          text: 'You will Be Redirected Shortly',
+          }));
+          setTimeout(function () {
+          window.location.href = "dashboard.html"; //will redirect to your page
+          }, 3000); //will call the function after 3 secs.
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorMessage);
+          (Swal.fire({
+          icon: 'error',
+          title: 'An Error Has Occured',
+          text: ''+error,
+          }));;
+        });		  		  
+      });
+      //----- End
+
+</script>
